@@ -27,9 +27,7 @@ export class VSCDB {
             } catch {
                 absolutePath = path.resolve(dbPath)
             }
-            console.log('[DEBUG] trying no options...')
             this.db = new Database(absolutePath)
-            console.log('[DEBUG] no options WORKS')
         } catch (err) {
             throw new Error(`SQLITE_CANTOPEN: ${strerr(err)}`)
         }
