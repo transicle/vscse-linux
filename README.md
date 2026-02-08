@@ -7,6 +7,9 @@ There are scenarios where modifying these values would be useful.
 
 **VSCSE provides programmatic access for scenarios like testing, debugging, and migration.**
 
+### Issues
+VSCSE for Linux is partially supported because it can use either `v10` or `v11` encryption, whilst `v11` encryption is not yet supported, `v10` encryption will work without issues.
+
 ---
 
 ### Building

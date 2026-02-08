@@ -1,7 +1,5 @@
-# dev
+pnpm-lock.yaml
 node_modules/
 dist/
 dev.sh
-
-# secrets
 *.env

@@ -61,6 +61,7 @@ function getPointerAt(address: number): number {
 export function getAllPotentialKeys(): Uint8Array[] {
     ensureLibraryLoaded()
     const keys: Uint8Array[] = []
+    const salt = Buffer.from('saltysalt')
     
     const attributes = libsecret!.symbols.g_hash_table_new(null, null)
     
@@ -87,7 +88,6 @@ export function getAllPotentialKeys(): Uint8Array[] {
                     const password = libsecret!.symbols.secret_value_get_text(secretPtr as any)
                     if (password) {
                         const passStr = password.toString()
-                        const salt = Buffer.from('saltysalt')
                         const derived = pbkdf2Sync(passStr, salt, 1, 16, 'sha1')
                         keys.push(new Uint8Array(derived))
                     }
@@ -103,7 +103,7 @@ export function getAllPotentialKeys(): Uint8Array[] {
     
     if (keys.length === 0) {
         // infoblue("keyring empty. adding 'peanuts' fallback (standard Electron default).")
-        const derived = pbkdf2Sync('peanuts', Buffer.from('saltysalt'), 1, 16, 'sha1')
+        const derived = pbkdf2Sync('peanuts', salt, 1, 16, 'sha1')
         keys.push(new Uint8Array(derived))
     }
 

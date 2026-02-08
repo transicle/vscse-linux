@@ -23,6 +23,11 @@ export class LinuxCryptoProvider implements PlatformEncryptionProvider {
 
     decrypt(encryptedBuffer: Buffer): Buffer {
         if (encryptedBuffer.length < 3) throw new Error('short payload')
+        const version = encryptedBuffer.subarray(0, 3).toString('ascii')
+        if (version !== 'v10' && version !== 'v11') {
+            throw new Error(`unsupported encryption version: ${version}`)
+        }
+
         const iv = Buffer.alloc(16, 0x20)
         const ciphertext = encryptedBuffer.subarray(3)
 
@@ -35,12 +40,12 @@ export class LinuxCryptoProvider implements PlatformEncryptionProvider {
             try {
                 const decrypted = this.attemptDecryption(ciphertext, key, iv)
                 this.verifiedKey = key
-                infoblue("decryption match found!");
+                infoblue(`${version} decryption match found!`);
                 return decrypted
             } catch { continue }
         }
 
-        throw new Error(`BAD_DECRYPT: failed after trying ${this.potentialKeys.length} keys.`)
+        throw new Error(`BAD_DECRYPT: ${version} failed after trying ${this.potentialKeys.length} keys.`)
     }
 
     private attemptDecryption(ciphertext: Buffer, key: Uint8Array, iv: Buffer): Buffer {
